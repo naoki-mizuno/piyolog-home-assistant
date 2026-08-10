@@ -433,8 +433,14 @@ class PiyoLogCoordinator(DataUpdateCoordinator):
             attrs["head_circumference"] = value
         elif event_type == EventType.CHEST and value > 0:
             attrs["chest_circumference"] = value
-        elif event_type in [EventType.MILKING, EventType.PUMPING] and amount > 0:
+        elif (
+            event_type in [EventType.MILKING, EventType.PUMPING, EventType.DRINK]
+            and amount > 0
+        ):
             attrs["amount"] = amount
+        elif event_type == EventType.WALKING and value > 0:
+            # PiyoLog stores the walk duration in seconds
+            attrs["duration_minutes"] = int(value) // 60
 
         return attrs
 

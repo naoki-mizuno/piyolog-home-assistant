@@ -13,7 +13,7 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 
-from .client import PiyoLogClient, BreastfeedingOrder
+from .client import PiyoLogClient, BreastfeedingOrder, EventType
 from .coordinator import PiyoLogCoordinator, UpdateFailed
 from .const import (
     DOMAIN,
@@ -23,18 +23,20 @@ from .const import (
     CONF_DEFAULT_BABY_ID,
     CONF_SYNC_INTERVAL,
     DEFAULT_SYNC_INTERVAL,
-    DEFAULT_MILK_AMOUNT,
-    SERVICE_ADD_PEE,
+    ADD_EVENT_SERVICES,
+    ALL_SERVICES,
+    CUSTOM_EVENT_TYPES,
+    MIN_CUSTOM_EVENT_NUMBER,
+    MAX_CUSTOM_EVENT_NUMBER,
     SERVICE_ADD_POO,
-    SERVICE_ADD_SLEEP,
-    SERVICE_ADD_WAKE_UP,
     SERVICE_ADD_PEE_AND_POO,
-    SERVICE_ADD_MILK,
     SERVICE_ADD_BREASTFEEDING,
-    SERVICE_ADD_BATH,
-    SERVICE_ADD_WALK,
+    SERVICE_ADD_WEIGHT,
+    SERVICE_ADD_CUSTOM,
     SERVICE_FORCE_SYNC,
     SERVICE_DELETE_MOST_RECENT_EVENT,
+    WEIGHT_UNITS,
+    MAX_WEIGHT_KG,
     DEFAULT_DELETE_MAX_AGE_MINUTES,
     MAX_DELETE_MAX_AGE_MINUTES,
     DELETE_EVENT_TYPE_MAP,
@@ -43,6 +45,9 @@ from .const import (
     ATTR_DATETIME,
     ATTR_MEMO,
     ATTR_AMOUNT,
+    ATTR_CUSTOM_NUMBER,
+    ATTR_WEIGHT,
+    ATTR_UNIT,
     ATTR_POO_AMOUNT,
     ATTR_POO_HARDNESS,
     ATTR_POO_COLOR,
@@ -70,10 +75,33 @@ SERVICE_BASE_SCHEMA = vol.Schema(
     }
 )
 
-SERVICE_MILK_SCHEMA = SERVICE_BASE_SCHEMA.extend(
+
+def _add_event_schema(field):
+    """Build the schema of an ADD_EVENT_SERVICES entry from its numeric field."""
+    if field is None:
+        return SERVICE_BASE_SCHEMA
+    number = vol.All(vol.Coerce(float), vol.Range(min=0))
+    if field.required:
+        key = vol.Required(field.attr)
+    elif field.default is not None:
+        key = vol.Optional(field.attr, default=field.default)
+    else:
+        key = vol.Optional(field.attr)
+    return SERVICE_BASE_SCHEMA.extend({key: number})
+
+
+SERVICE_WEIGHT_SCHEMA = SERVICE_BASE_SCHEMA.extend(
     {
-        vol.Optional(ATTR_AMOUNT, default=DEFAULT_MILK_AMOUNT): vol.All(
-            vol.Coerce(float), vol.Range(min=0)
+        vol.Required(ATTR_WEIGHT): vol.All(vol.Coerce(float), vol.Range(min=0)),
+        vol.Optional(ATTR_UNIT, default="kg"): vol.In(WEIGHT_UNITS),
+    }
+)
+
+SERVICE_CUSTOM_SCHEMA = SERVICE_BASE_SCHEMA.extend(
+    {
+        vol.Required(ATTR_CUSTOM_NUMBER): vol.All(
+            vol.Coerce(int),
+            vol.Range(min=MIN_CUSTOM_EVENT_NUMBER, max=MAX_CUSTOM_EVENT_NUMBER),
         ),
     }
 )
@@ -180,19 +208,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Unregister services if this was the last entry
     if not hass.data[DOMAIN]:
-        for service in [
-            SERVICE_ADD_PEE,
-            SERVICE_ADD_POO,
-            SERVICE_ADD_SLEEP,
-            SERVICE_ADD_WAKE_UP,
-            SERVICE_ADD_PEE_AND_POO,
-            SERVICE_ADD_MILK,
-            SERVICE_ADD_BREASTFEEDING,
-            SERVICE_ADD_BATH,
-            SERVICE_ADD_WALK,
-            SERVICE_FORCE_SYNC,
-            SERVICE_DELETE_MOST_RECENT_EVENT,
-        ]:
+        for service in ALL_SERVICES:
             hass.services.async_remove(DOMAIN, service)
 
     return True
@@ -239,22 +255,78 @@ async def _async_register_services(hass: HomeAssistant, client: PiyoLogClient):
                 coordinator._update_recent_events(raw)
         await coordinator.async_request_refresh()
 
-    async def add_pee_service(call: ServiceCall):
-        """Handle add_pee service call."""
-        baby_id = call.data.get(ATTR_BABY_ID)
-        baby_index = call.data.get(ATTR_BABY_INDEX)
-        datetime_str = call.data.get(ATTR_DATETIME)
-        memo = call.data.get(ATTR_MEMO, "")
+    async def _register_event(service_name, event_type, field, call: ServiceCall):
+        """Register one event whose payload is fully described by `field`."""
+        builder = client.new_baby_event(
+            event_type,
+            call.data.get(ATTR_DATETIME),
+            call.data.get(ATTR_BABY_ID),
+            call.data.get(ATTR_BABY_INDEX),
+            call.data.get(ATTR_MEMO, ""),
+        )
+        value = None
+        if field is not None and (raw := call.data.get(field.attr)) is not None:
+            value = raw * field.scale
+            setter = (
+                builder.set_amount
+                if field.event_field == "amount"
+                else builder.set_value
+            )
+            setter(value)
 
         try:
-            response = await hass.async_add_executor_job(
-                client.add_pee, datetime_str, baby_id, baby_index, memo
-            )
-            _LOGGER.info("Successfully added pee event")
+            response = await hass.async_add_executor_job(builder.save)
+            _LOGGER.info("Successfully added %s event (value=%s)", service_name, value)
             await _refresh_after_add(response)
         except Exception as err:
-            _LOGGER.error("Failed to add pee event: %s", err)
+            _LOGGER.error("Failed to add %s event: %s", service_name, err)
             raise
+
+    def _make_add_event_handler(service_name, event_type, field):
+        """Bind one ADD_EVENT_SERVICES row into a service handler."""
+
+        async def handler(call: ServiceCall):
+            await _register_event(service_name, event_type, field, call)
+
+        return handler
+
+    async def add_weight_service(call: ServiceCall):
+        """Handle add_weight service call.
+
+        Weight is the one measurement PiyoLog records together with the unit it
+        was typed in: the value is always kilograms, and amount=1 asks the app
+        to show it in grams.
+        """
+        unit = call.data[ATTR_UNIT]
+        divisor, grams_flag = WEIGHT_UNITS[unit]
+        weight_kg = call.data[ATTR_WEIGHT] / divisor
+        if weight_kg > MAX_WEIGHT_KG:
+            raise ServiceValidationError(
+                f"{call.data[ATTR_WEIGHT]}{unit} is {weight_kg}kg, above the "
+                f"{MAX_WEIGHT_KG}kg limit; check the unit"
+            )
+
+        builder = client.new_baby_event(
+            EventType.BODY_WEIGHT,
+            call.data.get(ATTR_DATETIME),
+            call.data.get(ATTR_BABY_ID),
+            call.data.get(ATTR_BABY_INDEX),
+            call.data.get(ATTR_MEMO, ""),
+        )
+        builder.set_value(weight_kg).set_amount(grams_flag)
+
+        try:
+            response = await hass.async_add_executor_job(builder.save)
+            _LOGGER.info("Successfully added weight event: %skg", weight_kg)
+            await _refresh_after_add(response)
+        except Exception as err:
+            _LOGGER.error("Failed to add weight event: %s", err)
+            raise
+
+    async def add_custom_service(call: ServiceCall):
+        """Handle add_custom service call (custom events 1-10)."""
+        event_type = CUSTOM_EVENT_TYPES[call.data[ATTR_CUSTOM_NUMBER]]
+        await _register_event(SERVICE_ADD_CUSTOM, event_type, None, call)
 
     async def add_poo_service(call: ServiceCall):
         """Handle add_poo service call."""
@@ -293,74 +365,6 @@ async def _async_register_services(hass: HomeAssistant, client: PiyoLogClient):
             await _refresh_after_add(response)
         except Exception as err:
             _LOGGER.error("Failed to add poo event: %s", err)
-            raise
-
-    async def add_sleep_service(call: ServiceCall):
-        """Handle add_sleep service call."""
-        baby_id = call.data.get(ATTR_BABY_ID)
-        baby_index = call.data.get(ATTR_BABY_INDEX)
-        datetime_str = call.data.get(ATTR_DATETIME)
-        memo = call.data.get(ATTR_MEMO, "")
-
-        try:
-            response = await hass.async_add_executor_job(
-                client.add_sleep_begin, datetime_str, baby_id, baby_index, memo
-            )
-            _LOGGER.info("Successfully added sleep event")
-            await _refresh_after_add(response)
-        except Exception as err:
-            _LOGGER.error("Failed to add sleep event: %s", err)
-            raise
-
-    async def add_wake_up_service(call: ServiceCall):
-        """Handle add_wake_up service call."""
-        baby_id = call.data.get(ATTR_BABY_ID)
-        baby_index = call.data.get(ATTR_BABY_INDEX)
-        datetime_str = call.data.get(ATTR_DATETIME)
-        memo = call.data.get(ATTR_MEMO, "")
-
-        try:
-            response = await hass.async_add_executor_job(
-                client.add_sleep_end, datetime_str, baby_id, baby_index, memo
-            )
-            _LOGGER.info("Successfully added wake up event")
-            await _refresh_after_add(response)
-        except Exception as err:
-            _LOGGER.error("Failed to add wake up event: %s", err)
-            raise
-
-    async def add_bath_service(call: ServiceCall):
-        """Handle add_bath service call."""
-        baby_id = call.data.get(ATTR_BABY_ID)
-        baby_index = call.data.get(ATTR_BABY_INDEX)
-        datetime_str = call.data.get(ATTR_DATETIME)
-        memo = call.data.get(ATTR_MEMO, "")
-
-        try:
-            response = await hass.async_add_executor_job(
-                client.add_bath, datetime_str, baby_id, baby_index, memo
-            )
-            _LOGGER.info("Successfully added bath event")
-            await _refresh_after_add(response)
-        except Exception as err:
-            _LOGGER.error("Failed to add bath event: %s", err)
-            raise
-
-    async def add_walk_service(call: ServiceCall):
-        """Handle add_walk service call."""
-        baby_id = call.data.get(ATTR_BABY_ID)
-        baby_index = call.data.get(ATTR_BABY_INDEX)
-        datetime_str = call.data.get(ATTR_DATETIME)
-        memo = call.data.get(ATTR_MEMO, "")
-
-        try:
-            response = await hass.async_add_executor_job(
-                client.add_walking, datetime_str, baby_id, baby_index, memo
-            )
-            _LOGGER.info("Successfully added walk event")
-            await _refresh_after_add(response)
-        except Exception as err:
-            _LOGGER.error("Failed to add walk event: %s", err)
             raise
 
     async def add_pee_and_poo_service(call: ServiceCall):
@@ -408,24 +412,6 @@ async def _async_register_services(hass: HomeAssistant, client: PiyoLogClient):
             _LOGGER.error("Failed to add pee and poo events: %s", err)
             raise
 
-    async def add_milk_service(call: ServiceCall):
-        """Handle add_milk service call."""
-        baby_id = call.data.get(ATTR_BABY_ID)
-        baby_index = call.data.get(ATTR_BABY_INDEX)
-        datetime_str = call.data.get(ATTR_DATETIME)
-        memo = call.data.get(ATTR_MEMO, "")
-        amount = call.data.get(ATTR_AMOUNT, DEFAULT_MILK_AMOUNT)
-
-        try:
-            response = await hass.async_add_executor_job(
-                client.add_milk, amount, datetime_str, baby_id, baby_index, memo
-            )
-            _LOGGER.info("Successfully added milk event: %sml", amount)
-            await _refresh_after_add(response)
-        except Exception as err:
-            _LOGGER.error("Failed to add milk event: %s", err)
-            raise
-
     async def add_breastfeeding_service(call: ServiceCall):
         """Handle add_breastfeeding service call."""
         baby_id = call.data.get(ATTR_BABY_ID)
@@ -462,17 +448,15 @@ async def _async_register_services(hass: HomeAssistant, client: PiyoLogClient):
             raise
 
     # Register services
-    hass.services.async_register(
-        DOMAIN, SERVICE_ADD_PEE, add_pee_service, schema=SERVICE_BASE_SCHEMA
-    )
+    for service_name, (event_type, field) in ADD_EVENT_SERVICES.items():
+        hass.services.async_register(
+            DOMAIN,
+            service_name,
+            _make_add_event_handler(service_name, event_type, field),
+            schema=_add_event_schema(field),
+        )
     hass.services.async_register(
         DOMAIN, SERVICE_ADD_POO, add_poo_service, schema=SERVICE_BASE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_ADD_SLEEP, add_sleep_service, schema=SERVICE_BASE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_ADD_WAKE_UP, add_wake_up_service, schema=SERVICE_BASE_SCHEMA
     )
     hass.services.async_register(
         DOMAIN,
@@ -481,19 +465,16 @@ async def _async_register_services(hass: HomeAssistant, client: PiyoLogClient):
         schema=SERVICE_BASE_SCHEMA,
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_ADD_MILK, add_milk_service, schema=SERVICE_MILK_SCHEMA
-    )
-    hass.services.async_register(
         DOMAIN,
         SERVICE_ADD_BREASTFEEDING,
         add_breastfeeding_service,
         schema=SERVICE_BREASTFEEDING_SCHEMA,
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_ADD_BATH, add_bath_service, schema=SERVICE_BASE_SCHEMA
+        DOMAIN, SERVICE_ADD_WEIGHT, add_weight_service, schema=SERVICE_WEIGHT_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_ADD_WALK, add_walk_service, schema=SERVICE_BASE_SCHEMA
+        DOMAIN, SERVICE_ADD_CUSTOM, add_custom_service, schema=SERVICE_CUSTOM_SCHEMA
     )
 
     async def delete_most_recent_event_service(call: ServiceCall):
