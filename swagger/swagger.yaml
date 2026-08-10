@@ -931,7 +931,7 @@ components:
         - `16`: お風呂 / Baths
         - `17`: おやつ / Snack
         - `18`: 食事 / Meal
-        - `19`: 水分 / Drink
+        - `19`: のみもの / Drink
         - `20`: 薬 / Medicine
         - `21`: 病院 / Hospital
         - `22`: 散歩 / Walks
@@ -951,6 +951,38 @@ components:
         - `36`: 頭囲 / Head
         - `37`: 胸囲 / Chest
         - `38`: メモ / Note
+
+        ## イベントタイプ別の記録値 / Recorded value per event type
+
+        記録値は汎用の `amount` / `value`（一部 `left_time` / `right_time` /
+        `meta`）に格納され、どちらを使うかはイベントタイプごとに異なります。
+        以下の表にないタイプ（4, 5, 6, 9, 12〜18, 20, 21, 24〜28, 30〜35）は
+        日時とメモだけを持ちます。
+
+        単位はアプリの単位系設定に関わらず常にメートル法（ml / cm / kg / ℃）で、
+        表示時にのみ oz / in / lbs / ℉ へ変換されます。
+
+        | type | イベント / Event | フィールド / Field | 意味 / Meaning |
+        | ---- | ---------------- | ------------------ | -------------- |
+        | 1 | 母乳 / Breastfeeding | `left_time`, `right_time` | 左右それぞれの授乳時間（秒） |
+        | 1 | 〃 | `value` | 授乳の順番（0=なし, 1=左から, 2=右から） |
+        | 1 | 〃 | `amount` | 量（ml、任意） |
+        | 2 | ミルク / Formula | `amount` | 量（ml） |
+        | 3 | 搾母乳 / EBM | `amount` | 飲ませた量（ml） |
+        | 7 | うんち / Poop | `amount` | 量（0〜4） |
+        | 7 | 〃 | `value` | 硬さ（0〜4） |
+        | 7 | 〃 | `left_time` | 色（0〜7） |
+        | 8 | 体温 / Body Temperature | `value` | 体温（℃） |
+        | 10 | 身長 / Height | `value` | 身長（cm） |
+        | 11 | 体重 / Weight | `value` | 体重（kg） |
+        | 11 | 〃 | `amount` | `1` のときアプリはグラム表示する（値自体は kg のまま） |
+        | 19 | のみもの / Drink | `amount` | 量（ml） |
+        | 22 | 散歩 / Walks | `value` | 散歩の長さ（秒） |
+        | 23 | 搾乳 / Pumping | `amount` | 搾乳量（ml） |
+        | 29 | 予防接種 / Vaccine | `meta` | 接種したワクチン（JSON、`meta` の項を参照） |
+        | 36 | 頭囲 / Head | `value` | 頭囲（cm） |
+        | 37 | 胸囲 / Chest | `value` | 胸囲（cm） |
+        | 38 | メモ / Note | `amount` | 記入者の client_id（アプリでは「記入者」として表示） |
       enum:
         - 0 # OTHER
         - 1 # MOTHERS_MILK
@@ -1061,6 +1093,8 @@ components:
           description: |
             左側の授乳時間（秒） / うんちの色（イベントタイプにより異なる）
 
+            使用しないイベントタイプでは `0`。
+
             **母乳（type=1）の場合:**
             - 左側の授乳時間（秒）
 
@@ -1076,16 +1110,23 @@ components:
           example: 300
         right_time:
           type: integer
-          description: 右側の授乳時間（秒）
+          description: |
+            右側の授乳時間（秒）
+
+            母乳（type=1）でのみ使われ、それ以外のイベントタイプでは `0`。
           example: 300
         amount:
           type: number
           description: |
             量（イベントタイプにより異なる）
 
-            **母乳（type=1）、ミルク（type=2）、搾母乳（type=3）、搾乳（type=23）の場合:**
-            - ミルク・母乳の量（ml）
+            使用しないイベントタイプでは `0`。
+
+            **母乳（type=1）、ミルク（type=2）、搾母乳（type=3）、
+            のみもの（type=19）、搾乳（type=23）の場合:**
+            - 量（ml）
             - 母乳の場合、量の記録は任意
+            - 搾母乳は飲ませた量、搾乳は搾乳量
 
             **うんち（type=7）の場合:**
             - `0`: 記録しない / Not recorded
@@ -1093,11 +1134,21 @@ components:
             - `2`: 多め / Large
             - `3`: ふつう / Medium
             - `4`: ちょこっと / Bit
+
+            **体重（type=11）の場合 - 表示単位のフラグ:**
+            - `0`: kg で表示 / Display in kg
+            - `1`: グラムで表示 / Display in grams
+            - 体重自体は `value`（kg）に入る
+
+            **メモ（type=38）の場合:**
+            - 記入者の client_id（アプリでは「記入者」として表示）
           example: 50
         value:
           type: number
           description: |
             値（イベントタイプにより異なる）
+
+            使用しないイベントタイプでは `0`。
 
             **体温（type=8）の場合:**
             - 体温（℃）
@@ -1106,7 +1157,13 @@ components:
             - 身長（cm）
 
             **体重（type=11）の場合:**
-            - 体重（kg）
+            - 体重（kg）。`amount=1` のときアプリはグラムで表示する
+
+            **散歩（type=22）の場合:**
+            - 散歩の長さ（秒）
+
+            **頭囲（type=36）、胸囲（type=37）の場合:**
+            - 頭囲・胸囲（cm）
 
             **母乳（type=1）の場合 - 授乳の順番:**
             - `0`: 順序なし / No order
@@ -1147,5 +1204,25 @@ components:
         meta:
           type: string
           nullable: true
-          description: メタデータ（JSONまたはnull）
+          description: |
+            メタデータ（JSON文字列またはnull）
+
+            ほとんどのイベントタイプでは `null`。予防接種（type=29）だけが
+            接種内容をここに入れる。
+
+            ```json
+            {
+              "vaccine": {
+                "done": true,
+                "vaccinations": [
+                  { "type": 1, "sub_type": 0, "times": 2 }
+                ]
+              }
+            }
+            ```
+
+            - `done`: 接種済みかどうか
+            - `vaccinations[].type`: ワクチンの種類
+            - `vaccinations[].sub_type`: 種類の中の細分（例えば、2026年のインフルエンザなら `2026` 。無い場合は `0`）
+            - `vaccinations[].times`: 第何回目の接種か
           example: null
