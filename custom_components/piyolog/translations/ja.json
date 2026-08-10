@@ -74,101 +74,796 @@
       "name": "おしっこを記録",
       "description": "ぴよログにおしっこイベントを登録",
       "fields": {
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
       }
     },
     "add_poo": {
       "name": "うんちを記録",
       "description": "ぴよログにうんちイベントを登録",
       "fields": {
-        "poo_amount": { "name": "量", "description": "うんちの量（省略可）" },
-        "poo_hardness": { "name": "硬さ", "description": "うんちの硬さ・状態（省略可）" },
-        "poo_color": { "name": "色", "description": "うんちの色（省略可）" },
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
-      }
-    },
-    "add_sleep": {
-      "name": "「寝る」を記録",
-      "description": "ぴよログに「寝る」イベントを登録",
-      "fields": {
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
-      }
-    },
-    "add_wake_up": {
-      "name": "「起きる」を記録",
-      "description": "ぴよログに「起きる」イベントを登録",
-      "fields": {
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
+        "poo_amount": {
+          "name": "量",
+          "description": "うんちの量（省略可）"
+        },
+        "poo_hardness": {
+          "name": "硬さ",
+          "description": "うんちの硬さ・状態（省略可）"
+        },
+        "poo_color": {
+          "name": "色",
+          "description": "うんちの色（省略可）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
       }
     },
     "add_pee_and_poo": {
       "name": "「おしっこ」と「うんち」を記録",
       "description": "ぴよログに「おしっこ」と「うんち」の両方を登録",
       "fields": {
-        "poo_amount": { "name": "うんちの量", "description": "うんちの量（省略可）" },
-        "poo_hardness": { "name": "うんちの硬さ", "description": "うんちの硬さ・状態（省略可）" },
-        "poo_color": { "name": "うんちの色", "description": "うんちの色（省略可）" },
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
+        "poo_amount": {
+          "name": "うんちの量",
+          "description": "うんちの量（省略可）"
+        },
+        "poo_hardness": {
+          "name": "うんちの硬さ",
+          "description": "うんちの硬さ・状態（省略可）"
+        },
+        "poo_color": {
+          "name": "うんちの色",
+          "description": "うんちの色（省略可）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
       }
     },
-    "add_milk": {
-      "name": "「ミルク」を記録",
-      "description": "ぴよログに「ミルク」イベントを登録",
+    "add_sleep": {
+      "name": "「寝る」を記録",
+      "description": "ぴよログに「寝る」イベントを登録",
       "fields": {
-        "amount": { "name": "量（ml）", "description": "ミルクの量（ミリリットル）" },
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_wake_up": {
+      "name": "「起きる」を記録",
+      "description": "ぴよログに「起きる」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
       }
     },
     "add_breastfeeding": {
       "name": "「母乳」を記録",
       "description": "ぴよログに「母乳」イベントを登録",
       "fields": {
-        "breastfeeding_left_minutes": { "name": "左（分）", "description": "左の授乳時間（分、省略可）" },
-        "breastfeeding_right_minutes": { "name": "右（分）", "description": "右の授乳時間（分、省略可）" },
-        "breastfeeding_order": { "name": "授乳順", "description": "授乳の順番（省略可）" },
-        "amount": { "name": "量（ml）", "description": "ml単位の量（授乳量の記録用、省略可）" },
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
+        "breastfeeding_left_minutes": {
+          "name": "左（分）",
+          "description": "左胸の授乳時間（分）"
+        },
+        "breastfeeding_right_minutes": {
+          "name": "右（分）",
+          "description": "右胸の授乳時間（分）"
+        },
+        "breastfeeding_order": {
+          "name": "授乳の順番",
+          "description": "どちらの胸から授乳したか"
+        },
+        "amount": {
+          "name": "量（ml）",
+          "description": "量（ミリリットル、搾母乳の量を記録する場合に使用）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_milk": {
+      "name": "「ミルク」を記録",
+      "description": "ぴよログに「ミルク」イベントを登録",
+      "fields": {
+        "amount": {
+          "name": "量（ml）",
+          "description": "ミルクの量（ミリリットル）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_expressed_milk": {
+      "name": "「搾母乳」を記録",
+      "description": "ぴよログに「搾母乳」イベントを登録",
+      "fields": {
+        "amount": {
+          "name": "量（ml）",
+          "description": "飲ませた搾母乳の量（ミリリットル）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_pumping": {
+      "name": "「搾乳」を記録",
+      "description": "ぴよログに「搾乳」イベントを登録",
+      "fields": {
+        "amount": {
+          "name": "量（ml）",
+          "description": "搾乳した量（ミリリットル）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_baby_food": {
+      "name": "「離乳食」を記録",
+      "description": "ぴよログに「離乳食」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_meal": {
+      "name": "「ごはん」を記録",
+      "description": "ぴよログに「ごはん」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_snack": {
+      "name": "「おやつ」を記録",
+      "description": "ぴよログに「おやつ」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_drink": {
+      "name": "「飲み物」を記録",
+      "description": "ぴよログに「飲み物」イベントを登録",
+      "fields": {
+        "amount": {
+          "name": "量（ml）",
+          "description": "飲んだ量（ミリリットル、省略可）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_temperature": {
+      "name": "「体温」を記録",
+      "description": "ぴよログに体温の測定結果を登録",
+      "fields": {
+        "temperature": {
+          "name": "体温",
+          "description": "体温（摂氏）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_height": {
+      "name": "「身長」を記録",
+      "description": "ぴよログに身長の測定結果を登録",
+      "fields": {
+        "height": {
+          "name": "身長",
+          "description": "身長（センチメートル）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_weight": {
+      "name": "「体重」を記録",
+      "description": "ぴよログに体重の測定結果を登録",
+      "fields": {
+        "weight": {
+          "name": "体重",
+          "description": "体重（下で選んだ単位）"
+        },
+        "unit": {
+          "name": "単位",
+          "description": "体重の単位（ぴよログでもこの単位で表示されます）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_head_circumference": {
+      "name": "「頭囲」を記録",
+      "description": "ぴよログに頭囲の測定結果を登録",
+      "fields": {
+        "circumference": {
+          "name": "頭囲",
+          "description": "頭囲（センチメートル）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_chest_circumference": {
+      "name": "「胸囲」を記録",
+      "description": "ぴよログに胸囲の測定結果を登録",
+      "fields": {
+        "circumference": {
+          "name": "胸囲",
+          "description": "胸囲（センチメートル）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_cough": {
+      "name": "「せき」を記録",
+      "description": "ぴよログに「せき」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_vomit": {
+      "name": "「嘔吐」を記録",
+      "description": "ぴよログに「嘔吐」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_rash": {
+      "name": "「発疹」を記録",
+      "description": "ぴよログに「発疹」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_injury": {
+      "name": "「ケガ」を記録",
+      "description": "ぴよログに「ケガ」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_medicine": {
+      "name": "「くすり」を記録",
+      "description": "ぴよログに「くすり」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_hospital": {
+      "name": "「病院」を記録",
+      "description": "ぴよログに「病院」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_vaccine": {
+      "name": "「予防接種」を記録",
+      "description": "ぴよログに「予防接種」イベントを登録（ワクチン名はメモに記入）",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
       }
     },
     "add_bath": {
       "name": "「お風呂」を記録",
       "description": "ぴよログに「お風呂」イベントを登録",
       "fields": {
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
       }
     },
     "add_walk": {
       "name": "「さんぽ」を記録",
       "description": "ぴよログに「さんぽ」イベントを登録",
       "fields": {
-        "baby_id": { "name": "赤ちゃんID", "description": "赤ちゃんID（省略時はデフォルトを使用）" },
-        "baby_index": { "name": "赤ちゃんの番号", "description": "赤ちゃんのインデックス（0から、省略可）" },
-        "datetime": { "name": "日時", "description": "イベント日時（省略時は現在時刻）" },
-        "memo": { "name": "メモ", "description": "任意のメモ" }
+        "duration_minutes": {
+          "name": "時間",
+          "description": "さんぽの時間（分、省略可）"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_milestone": {
+      "name": "「記念日」を記録",
+      "description": "ぴよログに「記念日」イベントを登録（内容はメモに記入）",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_note": {
+      "name": "「メモ」を記録",
+      "description": "ぴよログに自由記述のメモを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_other": {
+      "name": "「その他」を記録",
+      "description": "ぴよログに「その他」イベントを登録",
+      "fields": {
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "add_custom": {
+      "name": "カスタムイベントを記録",
+      "description": "ぴよログで設定したカスタムイベント（1〜10）を登録",
+      "fields": {
+        "number": {
+          "name": "カスタムイベント番号",
+          "description": "ぴよログで設定したカスタムイベント（1〜10）のどれを記録するか"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "赤ちゃんID（省略時はデフォルトを使用）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "赤ちゃんのインデックス（0から、省略可）"
+        },
+        "datetime": {
+          "name": "日時",
+          "description": "イベント日時（省略時は現在時刻）"
+        },
+        "memo": {
+          "name": "メモ",
+          "description": "任意のメモ"
+        }
+      }
+    },
+    "delete_most_recent_event": {
+      "name": "直近のイベントを削除",
+      "description": "直近に登録されたイベントを削除（イベントの日時ではなく登録時刻が基準）。指定した時間より古いイベントは削除しません。",
+      "fields": {
+        "event_type": {
+          "name": "イベントの種類",
+          "description": "削除対象をこれらの種類に限定（省略時はすべて）"
+        },
+        "max_age_minutes": {
+          "name": "対象とする経過時間（分）",
+          "description": "登録からこの分数以上経過したイベントは削除しない"
+        },
+        "sync_before_check": {
+          "name": "削除前に同期",
+          "description": "直近のイベントを探す前にぴよログから最新データを取得する"
+        },
+        "baby_id": {
+          "name": "赤ちゃんID",
+          "description": "この赤ちゃんのイベントに限定（省略可）"
+        },
+        "baby_index": {
+          "name": "赤ちゃんの番号",
+          "description": "この番号（0から）の赤ちゃんのイベントに限定（省略可）"
+        }
       }
     },
     "force_sync": {

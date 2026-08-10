@@ -74,101 +74,796 @@
       "name": "Add Pee Event",
       "description": "Register a pee event to PiyoLog",
       "fields": {
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
       }
     },
     "add_poo": {
       "name": "Add Poo Event",
       "description": "Register a poo event to PiyoLog",
       "fields": {
-        "poo_amount": { "name": "Amount", "description": "Poo amount/volume (optional)" },
-        "poo_hardness": { "name": "Hardness", "description": "Poo consistency/hardness (optional)" },
-        "poo_color": { "name": "Color", "description": "Poo color (optional)" },
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
-      }
-    },
-    "add_sleep": {
-      "name": "Add Sleep Event",
-      "description": "Register a sleep start event to PiyoLog",
-      "fields": {
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
-      }
-    },
-    "add_wake_up": {
-      "name": "Add Wake Up Event",
-      "description": "Register a wake up event to PiyoLog",
-      "fields": {
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
+        "poo_amount": {
+          "name": "Amount",
+          "description": "Poo amount/volume (optional)"
+        },
+        "poo_hardness": {
+          "name": "Hardness",
+          "description": "Poo consistency/hardness (optional)"
+        },
+        "poo_color": {
+          "name": "Color",
+          "description": "Poo color (optional)"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
       }
     },
     "add_pee_and_poo": {
       "name": "Add Pee and Poo Event",
       "description": "Register both pee and poo events to PiyoLog",
       "fields": {
-        "poo_amount": { "name": "Poo Amount", "description": "Poo amount/volume (optional)" },
-        "poo_hardness": { "name": "Poo Hardness", "description": "Poo consistency/hardness (optional)" },
-        "poo_color": { "name": "Poo Color", "description": "Poo color (optional)" },
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
+        "poo_amount": {
+          "name": "Poo Amount",
+          "description": "Poo amount/volume (optional)"
+        },
+        "poo_hardness": {
+          "name": "Poo Hardness",
+          "description": "Poo consistency/hardness (optional)"
+        },
+        "poo_color": {
+          "name": "Poo Color",
+          "description": "Poo color (optional)"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
       }
     },
-    "add_milk": {
-      "name": "Add Milk Event",
-      "description": "Register a milk/formula feeding event",
+    "add_sleep": {
+      "name": "Add Sleep Event",
+      "description": "Register a sleep start event to PiyoLog",
       "fields": {
-        "amount": { "name": "Amount (ml)", "description": "Amount of milk in milliliters" },
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_wake_up": {
+      "name": "Add Wake Up Event",
+      "description": "Register a wake up event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
       }
     },
     "add_breastfeeding": {
       "name": "Add Breastfeeding Event",
       "description": "Register a breastfeeding event",
       "fields": {
-        "breastfeeding_left_minutes": { "name": "Left Breast (minutes)", "description": "Left breast feeding duration in minutes" },
-        "breastfeeding_right_minutes": { "name": "Right Breast (minutes)", "description": "Right breast feeding duration in minutes" },
-        "breastfeeding_order": { "name": "Feeding Order", "description": "Which breast was used first" },
-        "amount": { "name": "Amount (ml)", "description": "Amount in ml (optional, for tracking expressed breast milk volume)" },
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
+        "breastfeeding_left_minutes": {
+          "name": "Left Breast (minutes)",
+          "description": "Left breast feeding duration in minutes"
+        },
+        "breastfeeding_right_minutes": {
+          "name": "Right Breast (minutes)",
+          "description": "Right breast feeding duration in minutes"
+        },
+        "breastfeeding_order": {
+          "name": "Feeding Order",
+          "description": "Which breast was used first"
+        },
+        "amount": {
+          "name": "Amount (ml)",
+          "description": "Amount in ml (optional, for tracking expressed breast milk volume)"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_milk": {
+      "name": "Add Milk Event",
+      "description": "Register a milk/formula feeding event",
+      "fields": {
+        "amount": {
+          "name": "Amount (ml)",
+          "description": "Amount of milk in milliliters"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_expressed_milk": {
+      "name": "Add Expressed Breast Milk Event",
+      "description": "Register bottle-fed expressed breast milk",
+      "fields": {
+        "amount": {
+          "name": "Amount (ml)",
+          "description": "Amount of expressed breast milk fed, in milliliters"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_pumping": {
+      "name": "Add Pumping Event",
+      "description": "Register how much breast milk was pumped",
+      "fields": {
+        "amount": {
+          "name": "Amount (ml)",
+          "description": "Amount of breast milk pumped, in milliliters"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_baby_food": {
+      "name": "Add Solid Food Event",
+      "description": "Register a solid (baby) food event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_meal": {
+      "name": "Add Meal Event",
+      "description": "Register a meal event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_snack": {
+      "name": "Add Snack Event",
+      "description": "Register a snack event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_drink": {
+      "name": "Add Drink Event",
+      "description": "Register a drink (water, tea, juice) event to PiyoLog",
+      "fields": {
+        "amount": {
+          "name": "Amount (ml)",
+          "description": "Amount drunk in milliliters (optional)"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_temperature": {
+      "name": "Add Body Temperature Event",
+      "description": "Register a body temperature measurement",
+      "fields": {
+        "temperature": {
+          "name": "Temperature",
+          "description": "Body temperature in degrees Celsius"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_height": {
+      "name": "Add Height Event",
+      "description": "Register a height measurement",
+      "fields": {
+        "height": {
+          "name": "Height",
+          "description": "Body height in centimeters"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_weight": {
+      "name": "Add Weight Event",
+      "description": "Register a weight measurement",
+      "fields": {
+        "weight": {
+          "name": "Weight",
+          "description": "Body weight, in the unit selected below"
+        },
+        "unit": {
+          "name": "Unit",
+          "description": "Unit the weight is given in (PiyoLog also shows it in this unit)"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_head_circumference": {
+      "name": "Add Head Circumference Event",
+      "description": "Register a head circumference measurement",
+      "fields": {
+        "circumference": {
+          "name": "Head Circumference",
+          "description": "Head circumference in centimeters"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_chest_circumference": {
+      "name": "Add Chest Circumference Event",
+      "description": "Register a chest circumference measurement",
+      "fields": {
+        "circumference": {
+          "name": "Chest Circumference",
+          "description": "Chest circumference in centimeters"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_cough": {
+      "name": "Add Cough Event",
+      "description": "Register a cough event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_vomit": {
+      "name": "Add Vomit Event",
+      "description": "Register a vomit event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_rash": {
+      "name": "Add Rash Event",
+      "description": "Register a rash event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_injury": {
+      "name": "Add Injury Event",
+      "description": "Register an injury event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_medicine": {
+      "name": "Add Medicine Event",
+      "description": "Register a medicine event to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_hospital": {
+      "name": "Add Hospital Event",
+      "description": "Register a hospital/doctor visit to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_vaccine": {
+      "name": "Add Vaccine Event",
+      "description": "Register a vaccination to PiyoLog (name the vaccine in the memo)",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
       }
     },
     "add_bath": {
       "name": "Add Bath Event",
       "description": "Register a bath event to PiyoLog",
       "fields": {
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
       }
     },
     "add_walk": {
       "name": "Add Walk Event",
       "description": "Register a walk/stroll event to PiyoLog",
       "fields": {
-        "baby_id": { "name": "Baby ID", "description": "Baby ID (optional, uses default if not specified)" },
-        "baby_index": { "name": "Baby Index", "description": "Index of baby (0-based, optional)" },
-        "datetime": { "name": "Date/Time", "description": "Event datetime (optional, defaults to now)" },
-        "memo": { "name": "Memo", "description": "Optional note" }
+        "duration_minutes": {
+          "name": "Duration",
+          "description": "How long the walk lasted, in minutes (optional)"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_milestone": {
+      "name": "Add Milestone Event",
+      "description": "Register a milestone to PiyoLog (describe it in the memo)",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_note": {
+      "name": "Add Note",
+      "description": "Register a free-text note to PiyoLog",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_other": {
+      "name": "Add Other Event",
+      "description": "Register an event that has no dedicated type",
+      "fields": {
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "add_custom": {
+      "name": "Add Custom Event",
+      "description": "Register one of the ten custom events configured in PiyoLog",
+      "fields": {
+        "number": {
+          "name": "Custom Event Number",
+          "description": "Which of the ten custom events configured in PiyoLog to log"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Baby ID (optional, uses default if not specified)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Index of baby (0-based, optional)"
+        },
+        "datetime": {
+          "name": "Date/Time",
+          "description": "Event datetime (optional, defaults to now)"
+        },
+        "memo": {
+          "name": "Memo",
+          "description": "Optional note"
+        }
+      }
+    },
+    "delete_most_recent_event": {
+      "name": "Delete Most Recent Event",
+      "description": "Soft-delete the most recently registered event (by registration time, not event datetime). Refuses to delete events older than the configured guard.",
+      "fields": {
+        "event_type": {
+          "name": "Event Types",
+          "description": "Restrict deletion to one or more of these event types (default: any)"
+        },
+        "max_age_minutes": {
+          "name": "Max Age (minutes)",
+          "description": "Refuse to delete if the candidate event was registered more than this many minutes ago"
+        },
+        "sync_before_check": {
+          "name": "Sync Before Check",
+          "description": "Fetch the latest data from PiyoLog before searching for the most recent event"
+        },
+        "baby_id": {
+          "name": "Baby ID",
+          "description": "Restrict to events for this baby (optional)"
+        },
+        "baby_index": {
+          "name": "Baby Index",
+          "description": "Restrict to events for the baby at this 0-based index (optional)"
+        }
       }
     },
     "force_sync": {
