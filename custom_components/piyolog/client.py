@@ -582,13 +582,13 @@ class PiyoLogClient:
         else:
             raise Exception(f"Account linking failed: {data}")
 
-    def sync(self, main_version=0, minor_version=0, data=None):
+    def sync(self, main_version=1, minor_version=1, data=None):
         """
         Syncs data with the server.
 
         Args:
-            main_version: Main version number (0 to get all data)
-            minor_version: Minor version number (0 to get all data)
+            main_version: Main version number (1 to get all data)
+            minor_version: Minor version number (1 to get all data)
             data: Optional dict containing data to upload (e.g., {"baby_event": [...]})
 
         Returns:
@@ -626,6 +626,28 @@ class PiyoLogClient:
                 self._minor_version = response["minor_version"]
 
         return response
+
+    def full_snapshot(self):
+        """
+        Fetch the complete server-side dataset (all babies, all events).
+
+        main_version=1, minor_version=1 is the "initial sync" pair that makes
+        the server return everything (0 is not a valid version -- the server
+        rejects it with status 400).
+
+        sync() then adopts the server's latest versions. They are restored
+        afterwards so the caller's delta sync still starts from where it left
+        off; otherwise events registered since then would be swallowed by this
+        call and never reach the coordinator.
+
+        Returns:
+            dict: Server response containing the full dataset
+        """
+        saved = (self._main_version, self._minor_version)
+        try:
+            return self.sync(1, 1)
+        finally:
+            self._main_version, self._minor_version = saved
 
     def register_baby_event(self, event_data):
         """
