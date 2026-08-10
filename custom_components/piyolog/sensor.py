@@ -146,7 +146,7 @@ class PiyoLogLastEventSensor(CoordinatorEntity[PiyoLogCoordinator], SensorEntity
         event = self._get_latest_event()
         if not event:
             return None
-        return self.coordinator._parse_datetime_jst(event.get("datetime"))
+        return self.coordinator.parse_event_datetime(event)
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
@@ -216,12 +216,11 @@ class PiyoLogBreastfeedingTodaySensor(
         for e in self.coordinator._breastfeeding_events.values():
             if str(e.get("baby_id")) != str(self._baby_id):
                 continue
-            dt = self.coordinator._parse_datetime_jst(e.get("datetime"))
+            dt = self.coordinator.parse_event_datetime(e)
             if dt is None:
                 continue
-            # Convert to HA's configured timezone for "today" comparison
-            event_date = dt.astimezone(dt_util.DEFAULT_TIME_ZONE).date()
-            if event_date != today:
+            # parse_event_datetime() already returns HA-local time
+            if dt.date() != today:
                 continue
             left_sec += e.get("left_time", 0)
             right_sec += e.get("right_time", 0)

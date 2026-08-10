@@ -119,6 +119,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         user_id=entry.data[CONF_USER_ID],
         client_id=entry.data[CONF_CLIENT_ID],
         client_token=entry.data[CONF_CLIENT_TOKEN],
+        # Events are logged with the wall clock of Home Assistant's timezone,
+        # matching what the PiyoLog app on a local device would write.
+        time_zone=hass.config.time_zone,
     )
 
     # Set default baby if configured

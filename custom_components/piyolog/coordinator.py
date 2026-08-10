@@ -5,10 +5,10 @@ import json
 import logging
 import time
 from typing import Any, Dict, List, Optional, Set
-from zoneinfo import ZoneInfo
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util import dt as dt_util
 
 from .client import (
     PiyoLogClient,
@@ -18,9 +18,7 @@ from .client import (
     PoopColor,
     BreastfeedingOrder,
 )
-from .const import DOMAIN, EVENT_TYPE_NAMES, PIYOLOG_TIMEZONE
-
-_JST = ZoneInfo(PIYOLOG_TIMEZONE)
+from .const import DOMAIN, EVENT_TYPE_NAMES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -261,14 +259,13 @@ class PiyoLogCoordinator(DataUpdateCoordinator):
             event_type = event.get("type")
             if baby_id is None or event_type is None:
                 continue
-            dt_iso = self._format_datetime_iso(event.get("datetime"))
-            if not dt_iso:
+            dt = self.parse_event_datetime(event)
+            if dt is None:
                 continue
             key = (str(baby_id), int(event_type))
             existing = self._last_events.get(key)
-            if existing is None or dt_iso > self._format_datetime_iso(
-                existing.get("datetime")
-            ):
+            existing_dt = self.parse_event_datetime(existing) if existing else None
+            if existing_dt is None or dt > existing_dt:
                 self._last_events[key] = event
 
             # SLEEP_BEGIN and MOTHERS_MILK events are now managed by
@@ -330,35 +327,29 @@ class PiyoLogCoordinator(DataUpdateCoordinator):
         for eid in stale:
             self._recent_events.pop(eid, None)
 
-    def _parse_datetime_jst(self, datetime_str: Optional[str]) -> Optional[datetime]:
-        """Parse PiyoLog "YYYYMMDD HH:mm" or ISO string to JST-aware datetime.
+    def parse_event_datetime(self, event: Dict[str, Any]) -> Optional[datetime]:
+        """Return an event's time as an aware datetime in HA's timezone.
 
-        PiyoLog assumes JST. Comparisons and duration math (e.g. asleep_minutes)
-        use these so all values are in the same timezone.
+        datetime2 (epoch ms) is the only unambiguous field: date/time/datetime
+        are written in the recording device's local timezone with no offset
+        attached, so an event logged while travelling would be read hours off if
+        they were trusted. Every event the API returns carries datetime2, so
+        without it the instant is simply unknown.
         """
-        if not datetime_str:
-            return None
-        s = str(datetime_str).strip()
-        if not s:
+        timestamp_ms = event.get("datetime2")
+        if not timestamp_ms:
+            _LOGGER.debug("Event %s has no datetime2", event.get("event_id"))
             return None
         try:
-            if " " in s and len(s) >= 14 and s[8:9] == " ":
-                # PiyoLog format: "20260209 14:30" (14 chars)
-                date_part, time_part = s.split(None, 1)
-                year = int(date_part[0:4])
-                month = int(date_part[4:6])
-                day = int(date_part[6:8])
-                hour, minute = int(time_part[0:2]), int(time_part[3:5])
-                sec = int(time_part[6:8]) if len(time_part) >= 8 else 0
-                return datetime(year, month, day, hour, minute, sec, tzinfo=_JST)
-            # ISO-like: parse and convert to JST
-            dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=_JST)
-            else:
-                dt = dt.astimezone(_JST)
-            return dt
-        except (ValueError, TypeError, IndexError):
+            return dt_util.as_local(
+                dt_util.utc_from_timestamp(int(timestamp_ms) / 1000)
+            )
+        except (ValueError, TypeError, OverflowError, OSError):
+            _LOGGER.debug(
+                "Event %s has an unusable datetime2: %r",
+                event.get("event_id"),
+                timestamp_ms,
+            )
             return None
 
     def build_event_attributes(self, event: Dict[str, Any]) -> Dict[str, Any]:
@@ -384,7 +375,7 @@ class PiyoLogCoordinator(DataUpdateCoordinator):
             "baby_id": baby_id,
             "baby_name": baby_name,
             "event_type": event_type_name,
-            "datetime": self._format_datetime_iso(event.get("datetime")),
+            "datetime": self._format_datetime_iso(event),
             "memo": event.get("memo", ""),
         }
 
@@ -394,13 +385,13 @@ class PiyoLogCoordinator(DataUpdateCoordinator):
         right_time = event.get("right_time", 0)
 
         if event_type == EventType.SLEEP_END:
-            wake_dt = self._parse_datetime_jst(event.get("datetime"))
+            wake_dt = self.parse_event_datetime(event)
             if wake_dt:
                 last_sleep_dt: Optional[datetime] = None
                 for e in self._sleep_begin_events.values():
                     if str(e.get("baby_id")) != str(baby_id):
                         continue
-                    dt = self._parse_datetime_jst(e.get("datetime"))
+                    dt = self.parse_event_datetime(e)
                     if (
                         dt
                         and dt < wake_dt
@@ -471,17 +462,17 @@ class PiyoLogCoordinator(DataUpdateCoordinator):
                 json.dumps(event, ensure_ascii=False, default=str),
             )
 
-    def _format_datetime_iso(self, datetime_str: Optional[str]) -> Optional[str]:
-        """Convert PiyoLog datetime to ISO 8601 with JST timezone.
+    def _format_datetime_iso(self, event: Dict[str, Any]) -> Optional[str]:
+        """Convert an event's time to ISO 8601 in HA's timezone.
 
-        PiyoLog assumes JST. Output includes +09:00 so HA and templates
-        interpret the time correctly.
+        The offset is always included so HA and templates interpret the time
+        correctly regardless of where the event was recorded.
 
         Args:
-            datetime_str: PiyoLog "YYYYMMDD HH:mm" or ISO string
+            event: Baby event dict from PiyoLog API
 
         Returns:
-            ISO 8601 string like "2026-02-09T14:30:00+09:00" or None
+            ISO 8601 string like "2026-02-09T14:30:00+01:00" or None
         """
-        dt = self._parse_datetime_jst(datetime_str)
+        dt = self.parse_event_datetime(event)
         return dt.isoformat() if dt else None

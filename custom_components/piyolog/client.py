@@ -5,11 +5,12 @@ import time
 import dateparser
 from datetime import datetime, timezone
 
+# PiyoLog writes the date/time/datetime fields of an event in the *recording
+# device's* local timezone and attaches no offset; only datetime2 (epoch ms) is
+# unambiguous. Outgoing events are therefore formatted in the client's
+# configured timezone (see PiyoLogClient(time_zone=...)) so the app shows the
+# same wall clock the caller meant.
 from zoneinfo import ZoneInfo
-
-# PiyoLog API assumes JST (UTC+9) for event datetimes. Client uses this when
-# defaulting to "now" and when formatting datetimes for the API.
-_JST = ZoneInfo("Asia/Tokyo")
 
 
 # Event Type Constants
@@ -493,13 +494,32 @@ class PiyoLogClient:
     DEFAULT_USER_AGENT = "PiyoLog/9.1.0 (Android 14; Pixel 8 Build/UD1A.230803.041)"
 
     def __init__(
-        self, user_agent=None, user_id=None, client_id=None, client_token=None
+        self,
+        user_agent=None,
+        user_id=None,
+        client_id=None,
+        client_token=None,
+        time_zone=None,
     ):
+        """Create a client.
+
+        Args:
+            time_zone: IANA name (e.g. "Europe/Berlin") used to format the
+                offset-less date/time/datetime fields of outgoing events.
+                Defaults to the system timezone.
+        """
         self.user_id = user_id
         self.client_id = client_id
         self.client_token = client_token
         self.uuid = str(uuid.uuid4())  # Persistent UUID for this "device"
         self.USER_AGENT = user_agent if user_agent else self.DEFAULT_USER_AGENT
+
+        self._tz = (
+            ZoneInfo(time_zone) if time_zone else datetime.now().astimezone().tzinfo
+        )
+        # dateparser wants a zone name or a UTC offset string; the system
+        # fallback has no IANA name, so hand it the current offset instead.
+        self._tz_setting = time_zone or datetime.now(self._tz).strftime("%z")
 
         # Baby caching for convenience methods
         self._babies = None  # Cached list of babies
@@ -1285,13 +1305,12 @@ class PiyoLogClient:
 
     # --- Helper Functions ---
 
-    @staticmethod
-    def _normalize_datetime(dt_input):
+    def _normalize_datetime(self, dt_input):
         """
         Convert various datetime formats to required fields for the API.
 
-        PiyoLog assumes JST (UTC+9). Default "now" and parsed times are
-        normalized to JST so date/time/datetime sent to the API are correct.
+        Naive inputs are read in, and all fields are formatted in, the client's
+        configured timezone (self._tz), since date/time/datetime carry no offset.
 
         Args:
             dt_input: None, datetime object, int (timestamp), or string
@@ -1303,26 +1322,26 @@ class PiyoLogClient:
             ValueError: If datetime cannot be parsed
         """
         if dt_input is None:
-            dt = datetime.now(_JST)
+            dt = datetime.now(self._tz)
         elif isinstance(dt_input, datetime):
             if dt_input.tzinfo is None:
-                dt = dt_input.replace(tzinfo=_JST)
+                dt = dt_input.replace(tzinfo=self._tz)
             else:
-                dt = dt_input.astimezone(_JST)
+                dt = dt_input.astimezone(self._tz)
         elif isinstance(dt_input, int):
             if dt_input > 10000000000:
                 sec = dt_input / 1000
             else:
                 sec = dt_input
-            dt = datetime.fromtimestamp(sec, tz=timezone.utc).astimezone(_JST)
+            dt = datetime.fromtimestamp(sec, tz=timezone.utc).astimezone(self._tz)
         elif isinstance(dt_input, str):
-            dt = dateparser.parse(dt_input, settings={"TIMEZONE": "Asia/Tokyo"})
+            dt = dateparser.parse(dt_input, settings={"TIMEZONE": self._tz_setting})
             if dt is None:
                 raise ValueError(f"Could not parse datetime: {dt_input}")
             if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=_JST)
+                dt = dt.replace(tzinfo=self._tz)
             else:
-                dt = dt.astimezone(_JST)
+                dt = dt.astimezone(self._tz)
         else:
             raise ValueError(f"Unsupported datetime type: {type(dt_input)}")
 
