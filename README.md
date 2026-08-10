@@ -36,7 +36,7 @@ docker compose -f swagger/compose.yml up
 1. Home Assistant で HACS を開く
 2. 右上の「⋯」をクリック
 3. 「カスタムリポジトリ」を選択
-4. 統合として `https://github.com/naoki-mizuno/piyolog-hacs` を追加
+4. 統合として `https://github.com/naoki-mizuno/piyolog-home-assistant` を追加
 5. ぴよログのカードで「インストール」をクリック
 6. Home Assistant を再起動する
 
@@ -349,7 +349,7 @@ logger:
 
 各イベント種別（`const.py` の `EVENT_TYPE_NAMES` を参照）に対応したセンサが自動的に作成されます。センサIDは `sensor.piyolog_most_recent_<event_type>_<baby_name>` の形式です。
 
-**設定 → Developer Tools → States** の Filter Entities に、 `piyolog` と入力することで、センサの値と属性を確認することができます。
+**設定 → Tools → States** の Filter Entities に、 `piyolog` と入力することで、センサの値と属性を確認することができます。
 
 ### 最後のイベントからの経過時間を読み上げる
 
@@ -431,8 +431,8 @@ mode: single
 
 ## サポート
 
-- **不具合・要望:** [GitHub Issues](https://github.com/naoki-mizuno/piyolog-hacs/issues)
-- **質問・議論:** [GitHub Discussions](https://github.com/naoki-mizuno/piyolog-hacs/discussions)
+- **不具合・要望:** [GitHub Issues](https://github.com/naoki-mizuno/piyolog-home-assistant/issues)
+- **質問・議論:** [GitHub Discussions](https://github.com/naoki-mizuno/piyolog-home-assistant/discussions)
 
 ## ライセンスと注意事項
 
