@@ -95,9 +95,6 @@ Home Assistant のタイムゾーンを変更したら統合を再読み込み�
 
 ### サービス一覧
 
-> [!NOTE]
-> ぴよログで登録できる全てのイベントが実装されているわけではありません。
-
 #### `piyolog.add_pee`
 
 「おしっこ」を登録します。
@@ -186,6 +183,18 @@ data:
   memo: "ミルク"
 ```
 
+#### `piyolog.add_expressed_milk` / `piyolog.add_pumping` / `piyolog.add_drink`
+
+「搾母乳」（飲ませた量）、「搾乳」（搾乳量）、「のみもの」を登録します。
+いずれも `amount`（ml）を指定します。
+
+```yaml
+service: piyolog.add_pumping
+data:
+  amount: 120 # ml
+  memo: "夜間分"
+```
+
 #### `piyolog.add_breastfeeding`
 
 「母乳」を登録します。左右の時間・順番・授乳量（任意）を指定できます。
@@ -208,6 +217,34 @@ data:
 | `left_first`  | 左→右    |
 | `right_first` | 右→左    |
 
+#### 成長記録（体温・身長・体重・頭囲・胸囲）
+
+測定値をひとつ指定します。単位はぴよログアプリの単位系設定に関わらずメートル法です。
+
+```yaml
+service: piyolog.add_temperature
+data:
+  temperature: 36.8 # ℃
+  memo: "お風呂前"
+```
+
+| サービス                          | パラメータ      | 単位   |
+| --------------------------------- | --------------- | ------ |
+| `piyolog.add_temperature`         | `temperature`   | ℃      |
+| `piyolog.add_height`              | `height`        | cm     |
+| `piyolog.add_weight`              | `weight`        | kg / g |
+| `piyolog.add_head_circumference`  | `circumference` | cm     |
+| `piyolog.add_chest_circumference` | `circumference` | cm     |
+
+体重のみ `unit` で単位を選べます（`kg`（既定）または `g`）。ぴよログ側でも指定した単位で表示されます。
+
+```yaml
+service: piyolog.add_weight
+data:
+  weight: 3500
+  unit: g
+```
+
 #### `piyolog.add_bath`
 
 「お風呂」を登録します。
@@ -220,14 +257,56 @@ data:
 
 #### `piyolog.add_walk`
 
-「さんぽ」を登録します。
+「さんぽ」を登録します。`duration_minutes` で長さ（分）も記録できます。
 
 ```yaml
 service: piyolog.add_walk
 data:
+  duration_minutes: 30 # 任意
   memo: "公園でお散歩"
   datetime: "yesterday 3pm" # 相対時間にも対応
 ```
+
+#### `piyolog.add_custom`
+
+ぴよログで設定したカスタムイベント（1〜10）を登録します。
+
+```yaml
+service: piyolog.add_custom
+data:
+  number: 3 # カスタム3
+  memo: "つめ切り"
+```
+
+#### パラメータのないイベント
+
+以下のサービスは共通パラメータ（`baby_id` / `baby_index` / `datetime` / `memo`）だけを受け取ります。
+
+```yaml
+service: piyolog.add_vaccine
+data:
+  memo: "ロタ 2回目"
+```
+
+| サービス                | イベント |
+| ----------------------- | -------- |
+| `piyolog.add_baby_food` | 離乳食   |
+| `piyolog.add_meal`      | ごはん   |
+| `piyolog.add_snack`     | おやつ   |
+| `piyolog.add_cough`     | せき     |
+| `piyolog.add_vomit`     | 嘔吐     |
+| `piyolog.add_rash`      | 発疹     |
+| `piyolog.add_injury`    | ケガ     |
+| `piyolog.add_medicine`  | くすり   |
+| `piyolog.add_hospital`  | 病院     |
+| `piyolog.add_vaccine`   | 予防接種 |
+| `piyolog.add_milestone` | できた   |
+| `piyolog.add_note`      | メモ     |
+| `piyolog.add_other`     | その他   |
+
+> [!NOTE]
+> `piyolog.add_vaccine` は、予防接種の種類に関するパラメータが
+> 本来は指定できますが、複雑であるためこのサービスでは未実装です。
 
 #### `piyolog.delete_most_recent_event`
 
@@ -378,7 +457,6 @@ logger:
 > 直接のAPI呼び出しなどの利用を想定して、認証情報（`user_id`, `client_id`, `client_token`）がそのまま含まれています。
 > この情報があれば、ぴよログアカウントのデータに **完全にアクセス** できてしまうため、Issueなどには添付・公開しないでください。
 > 赤ちゃんの名前やメモも同様に含まれるため、添付しないで下さい。
-
 
 ## センサの活用例
 
