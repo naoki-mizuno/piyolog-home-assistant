@@ -1,6 +1,7 @@
 """DataUpdateCoordinator for PiyoLog integration."""
 
 from datetime import datetime, timedelta
+import json
 import logging
 import time
 from typing import Any, Dict, List, Optional, Set
@@ -464,6 +465,11 @@ class PiyoLogCoordinator(DataUpdateCoordinator):
             ha_event_data["baby_id"],
             ha_event_data["datetime"],
         )
+        if _LOGGER.isEnabledFor(logging.DEBUG):
+            _LOGGER.debug(
+                "New event raw payload: %s",
+                json.dumps(event, ensure_ascii=False, default=str),
+            )
 
     def _format_datetime_iso(self, datetime_str: Optional[str]) -> Optional[str]:
         """Convert PiyoLog datetime to ISO 8601 with JST timezone.

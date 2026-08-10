@@ -2,6 +2,7 @@
 
 import asyncio
 from datetime import timedelta
+import json
 import logging
 import time
 
@@ -223,6 +224,11 @@ async def _async_register_services(hass: HomeAssistant, client: PiyoLogClient):
         for response in responses:
             if response and response.get("status") == 200:
                 raw = response.get("data", {}).get("baby_event", [])
+                if _LOGGER.isEnabledFor(logging.DEBUG):
+                    _LOGGER.debug(
+                        "Registration response baby_event: %s",
+                        json.dumps(raw, ensure_ascii=False, default=str),
+                    )
                 baby_events = [e for e in raw if not e.get("deleted")]
                 coordinator._update_last_events(baby_events)
                 coordinator._update_sleep_begin_events(raw)
