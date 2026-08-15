@@ -1,0 +1,237 @@
+---
+# Home Assistant の /config/custom_sentences/ja/ に置く。
+# 応答と実際のサービス呼び出しは piyolog_intent_script.yaml 側で定義する。
+language: "ja"
+
+settings:
+  ignore_whitespace: true
+
+lists:
+  # イベント
+  # 追加パラメータのないイベント。out はサービス名 piyolog.add_<out> になる。
+  piyolog_event:
+    values:
+      - in: "([お]しっこ|オシッコ|小便)"
+        out: "pee"
+      - in: "(おしっこと<poo>|<poo>とおしっこ|両方)"
+        out: "pee_and_poo"
+      - in: "((寝|ね)(る|んね|た)|睡眠|就寝)"
+        out: "sleep"
+      - in: "((起|お)き(る|た)|起床)"
+        out: "wake_up"
+      - in: "([お](風呂|ふろ)|沐浴|入浴)"
+        out: "bath"
+      - in: "(離乳食|りにゅうしょく)"
+        out: "baby_food"
+      - in: "(ご(はん|飯)|食事)"
+        out: "meal"
+      - in: "(おやつ|間食)"
+        out: "snack"
+      - in: "([お](散歩|さんぽ))"
+        out: "walk"
+      - in: "(咳|せき)"
+        out: "cough"
+      - in: "(嘔吐|おうと|吐いた)"
+        out: "vomit"
+      - in: "(発疹|ほっしん)"
+        out: "rash"
+      - in: "(ケガ|けが|怪我)"
+        out: "injury"
+      - in: "(くすり|[お]薬)"
+        out: "medicine"
+      - in: "(病院|通院)"
+        out: "hospital"
+      - in: "(予防接種|ワクチン)"
+        out: "vaccine"
+      - in: "(できた|(はじ|初)めて)"
+        out: "milestone"
+      - in: "メモ"
+        out: "note"
+      - in: "(その[他|ほか])"
+        out: "other"
+
+  # ml 単位の量を伴うイベント
+  piyolog_amount_event:
+    values:
+      - in: "ミルク"
+        out: "milk"
+      - in: "((搾|さく)母乳)"
+        out: "expressed_milk"
+      - in: "((搾|さく)乳)"
+        out: "pumping"
+      - in: "((飲|の)み(もの|物)|水|麦茶|お茶)"
+        out: "drink"
+
+  # うんち詳細
+  poo_amount:
+    values:
+      - in: "(ちょこっと|ちょっとだけ)"
+        out: "bit"
+      - in: "(少なめ|少し|少量)"
+        out: "small"
+      - in: "(ふつう|普通)"
+        out: "normal"
+      - in: "(多め|たくさん|いっぱい|大量)"
+        out: "large"
+  poo_hardness:
+    values:
+      - in: "(下痢|げり)"
+        out: "diarrhea"
+      - in: "((やわ|柔)らかめ|ゆる(め|ゆる))"
+        out: "soft"
+      - in: "((かた|硬|固)め)"
+        out: "hard"
+  poo_color:
+    values:
+      - in: "(白|しろ)[い]"
+        out: "white"
+      - in: "(黄色|きいろ)[い]"
+        out: "yellow"
+      - in: "(オレンジ|橙)"
+        out: "orange"
+      - in: "(茶色|ちゃいろ)[い]"
+        out: "brown"
+      - in: "(緑|みどり|緑色|みどりいろ)"
+        out: "green"
+      - in: "((赤|あか)[い]|赤色|あかいろ)"
+        out: "red"
+      - in: "(黒|くろ)[い]"
+        out: "black"
+
+  # 数値
+  ml_amount:
+    range:
+      from: 1
+      to: 500
+  minutes:
+    range:
+      from: 1
+      to: 180
+  custom_number:
+    range:
+      from: 1
+      to: 10
+  circumference_part:
+    values:
+      - in: "(頭囲|(頭|あたま)のサイズ)"
+        out: "head"
+      - in: "(胸囲|胸のサイズ)"
+        out: "chest"
+  # 小数を言えるようにワイルドカードで受ける (36.8 / 3.5 など)
+  measure_value:
+    wildcard: true
+
+expansion_rules:
+  # 「ぴよログで」「ぴよログに」。文頭に付けても付けなくてもよい。
+  piyolog: "ぴよログ(で|に|へ)"
+  # 記録する動詞。ここに言い回しを足せば全ての文に反映される。
+  register: "(記録|登録|入力|記入)[[を]((し|つけ|付け|残し)(て|てください|(と|てお)(いて|く))|する)]"
+  unregister: "(取[り]消|削除|消[去]|キャンセル|元に戻)[し(て|てください|(と|てお)(いて|く))|す[る]]"
+  # ミルクなどを飲ませたときの言い回し
+  drank: "(あげ(た|ました)|(飲|の)んだ|飲みました)"
+  # ml の言い方
+  ml: "(ml|mL|ミリリットル|ミリ|cc|シーシー)"
+  # うんち（無駄に多くのバリエーションをカバー）
+  poo: "(うん(ち[くん|ちゃん]|こ|ちょ[(こ|っちょ)]|ちっち|ちーの|にょ|ご)|お(通|つう)じ|[大]便|クソ|くそ|💩)"
+
+intents:
+  # 追加パラメータのないイベント: 「ぴよログにうんちを記録して」など
+  PiyologAddEvent:
+    data:
+      - sentences:
+          - "[<piyolog>]{piyolog_event:event}[(を|と|は)<register>]"
+
+  # うんち: 量・硬さ・色を任意で指定できる
+  PiyologAddPoo:
+    data:
+      - sentences:
+          # うんちが最後に来るパターン
+          - "[<piyolog>][{poo_amount:poo_amount}[の|で|、]][{poo_hardness:poo_hardness}[の|で|、]][{poo_color:poo_color}[の|で]]<poo>[を<register>]"
+          - "[<piyolog>][{poo_amount:poo_amount}[の|で|、]][{poo_color:poo_color}[の|で|、]][{poo_hardness:poo_hardness}[の|で]]<poo>[を<register>]"
+          - "[<piyolog>][{poo_hardness:poo_hardness}[の|で|、]][{poo_amount:poo_amount}[の|で|、]][{poo_color:poo_color}[の|で]]<poo>[を<register>]"
+          - "[<piyolog>][{poo_hardness:poo_hardness}[の|で|、]][{poo_color:poo_color}[の|で|、]][{poo_amount:poo_amount}[の|で]]<poo>[を<register>]"
+          - "[<piyolog>][{poo_color:poo_color}[の|で|、]][{poo_amount:poo_amount}[の|で|、]][{poo_hardness:poo_hardness}[の|で]]<poo>[を<register>]"
+          - "[<piyolog>][{poo_color:poo_color}[の|で|、]][{poo_hardness:poo_hardness}[の|で|、]][{poo_amount:poo_amount}[の|で]]<poo>[を<register>]"
+          # うんちが最初に来るパターン
+          - "[<piyolog>]<poo>[は|を|が][{poo_amount:poo_amount}][の|で|、][{poo_hardness:poo_hardness}][の|で|、][{poo_color:poo_color}][で<register>]"
+          - "[<piyolog>]<poo>[は|を|が][{poo_amount:poo_amount}][の|で|、][{poo_color:poo_color}][の|で|、][{poo_hardness:poo_hardness}][で<register>]"
+          - "[<piyolog>]<poo>[は|を|が][{poo_hardness:poo_hardness}][の|で|、][{poo_amount:poo_amount}][の|で|、][{poo_color:poo_color}][で<register>]"
+          - "[<piyolog>]<poo>[は|を|が][{poo_hardness:poo_hardness}][の|で|、][{poo_color:poo_color}][の|で|、][{poo_amount:poo_amount}][で<register>]"
+          - "[<piyolog>]<poo>[は|を|が][{poo_color:poo_color}][の|で|、][{poo_amount:poo_amount}][の|で|、][{poo_hardness:poo_hardness}][で<register>]"
+          - "[<piyolog>]<poo>[は|を|が][{poo_color:poo_color}][の|で|、][{poo_hardness:poo_hardness}][の|で|、][{poo_amount:poo_amount}][で<register>]"
+
+  # ml 単位: 「ぴよログでミルクを140ml記録して」
+  PiyologAddAmount:
+    data:
+      - sentences:
+          - "[<piyolog>]{piyolog_amount_event:event}[を]{ml_amount:amount}<ml>[を<register>]"
+          - "[<piyolog>]{piyolog_amount_event:event}[を]{ml_amount:amount}<ml><drank>"
+
+  # 母乳: 左右の時間と順番
+  PiyologAddBreastfeeding:
+    data:
+      - sentences:
+          - "[<piyolog>](母乳|授乳)[を<register>]"
+      - sentences:
+          - "[<piyolog>](母乳|授乳)[を]左{minutes:left}分[と][右{minutes:right}分][で<register>]"
+        slots:
+          order: "left_first"
+      - sentences:
+          - "[<piyolog>](母乳|授乳)[を]右{minutes:right}分[と][左{minutes:left}分][で<register>]"
+        slots:
+          order: "right_first"
+
+  # 体温: 「体温を36.8度で記録して」
+  PiyologAddTemperature:
+    data:
+      - sentences:
+          - "[<piyolog>](体温|熱)[(を|は)]{measure_value:temperature}度[で<register>]"
+
+  # 体重: kg と g で単位を出し分ける
+  PiyologAddWeight:
+    data:
+      - sentences:
+          - "[<piyolog>]体重[(を|は)]{measure_value:weight}(キロ|キログラム|kg)[で<register>]"
+        slots:
+          unit: "kg"
+      - sentences:
+          - "[<piyolog>]体重[(を|は)]{measure_value:weight}(グラム|g)[で<register>]"
+        slots:
+          unit: "g"
+
+  # 身長
+  PiyologAddHeight:
+    data:
+      - sentences:
+          - "[<piyolog>]身長[(を|は)]{measure_value:height}(センチ|センチメートル|cm)[で<register>]"
+
+  # 頭囲・胸囲
+  PiyologAddCircumference:
+    data:
+      - sentences:
+          - "[<piyolog>]{circumference_part:part}[(を|は)]{measure_value:circumference}(センチ|センチメートル|cm)[で<register>]"
+
+  # さんぽ（時間つき）。時間なしの「さんぽを記録して」は PiyologAddEvent 側。
+  PiyologAddWalk:
+    data:
+      - sentences:
+          - "[<piyolog>]{minutes:duration}分[の](さんぽ|散歩|お散歩)[を<register>]"
+          - "[<piyolog>](さんぽ|[お]散歩)[を]{minutes:duration}分[で<register>]"
+
+  # ぴよログアプリ側で設定したカスタムイベント 1〜10
+  PiyologAddCustom:
+    data:
+      - sentences:
+          - "[<piyolog>]カスタム{custom_number:number}[番][を<register>]"
+
+  # 直近の登録を取り消す
+  PiyologDeleteRecent:
+    data:
+      - sentences:
+          - "[<piyolog>]((さっき|直近|最後|今|いま)の)[記録|イベント|登録][を|、]<unregister>"
+
+  # 手動同期
+  PiyologSync:
+    data:
+      - sentences:
+          - "ぴよログ[を](同期|更新)し(て|てください)"

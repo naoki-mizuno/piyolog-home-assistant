@@ -10,5 +10,9 @@
 !custom_components/**/*.json
 !custom_components/**/*.yaml
 
+!custom_sentences/
+!custom_sentences/**/
+!custom_sentences/**/*.yaml
+
 !swagger/
 !swagger/*

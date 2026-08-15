@@ -13,6 +13,7 @@
 - ぴよログへのイベント登録時のHome Assistantイベントトリガの発火
 - イベントの最終登録時刻を保持するセンサ
 - 本日の授乳の合計時間を保持するセンサ
+- 音声アシスタントの会話エージェント向けのインテント
 
 ## API仕様書
 
@@ -542,10 +543,84 @@ actions:
 mode: single
 ```
 
+## 音声アシスタント（会話エージェント）用のインテント
+
+音声アシスタントやアシスト機能で、例えば「ぴよログでうんちを記録して」と言うことでイベントが登録できるようにするためのファイルです。
+
+### インストール
+
+1. `piyolog.yaml` と `piyolog_intent_script.yaml` をHAの
+   `/config/custom_sentences/ja` にコピーする。
+2. `configuration.yaml` に読み込みを追加する:
+
+   ```yaml
+   intent_script: !include custom_sentences/ja/piyolog_intent_script.yaml
+   ```
+
+   すでに `intent_script:` がある場合は、ファイルの中身をそこへ貼り付ける。
+
+3. Home Assistant を再起動する（`intent_script` の追加には再起動が必要）。
+
+なお、文だけ（ `piyolog.yaml` ）を直した場合は **ツール → YAML → 会話 (Conversation) の再読み込み** で十分です。
+
+### 使用できる文の例
+
+| 文                                       | 呼ばれるサービス（`piyolog.add_xxx`）        |
+| ---------------------------------------- | -------------------------------------------- |
+| ぴよログでミルクを140ml記録して          | `milk` (amount: 140)                         |
+| ぴよログでミルク140ミリリットルをつけて  | `milk` (amount: 140)                         |
+| ミルク50ml                               | `milk` (amount: 50)                          |
+| うんち                                   | `poo`                                        |
+| 多めでやわらかめの黄色いうんちを記録して | `poo` (量・硬さ・色つき)                     |
+| 茶色のやわらかめうんちを記録して         | `poo` (硬さ・色つき)                         |
+| おしっこを記録                           | `pee`                                        |
+| おしっことうんちを記録して               | `pee_and_poo`                                |
+| 寝るを登録して / 起きたと入力して        | `sleep` / `wake_up`                          |
+| お風呂をつけといて                       | `bath`                                       |
+| 離乳食を記録して / ごはん / おやつ       | `baby_food` / `meal` / `snack`               |
+| くすりを記録して / 病院 / 予防接種       | `medicine` / `hospital` / `vaccine`          |
+| 咳を記録して / 嘔吐 / 発疹 / ケガ        | `cough` / `vomit` / `rash` / `injury`        |
+| できたを記録して / メモ / その他         | `milestone` / `note` / `other`               |
+| 搾乳を80ml記録して / 搾母乳60mlを記録    | `pumping` / `expressed_milk`                 |
+| 麦茶を50ml飲んだ                         | `drink`                                      |
+| 母乳を記録して                           | `breastfeeding`                              |
+| 授乳を左10分と右8分で記録して            | `breastfeeding` (order: left_first)          |
+| 母乳を右5分で記録して                    | `breastfeeding` (order: right_first)         |
+| 体温を36.8度で記録して                   | `temperature`                                |
+| 体重を3500グラムで記録して / 体重5.2キロ | `weight` (unit: g / kg)                      |
+| 身長を50センチで記録して                 | `height`                                     |
+| 頭囲を35cmで記録して / 胸囲は40センチ    | `head_circumference` / `chest_circumference` |
+| さんぽを記録して                         | `walk`                                       |
+| 30分のさんぽを記録して                   | `walk` (duration_minutes: 30)                |
+| カスタム3を記録して                      | `custom` (number: 3)                         |
+| さっきの記録を取り消して                 | `piyolog.delete_most_recent_event`           |
+| ぴよログを同期して                       | `piyolog.force_sync`                         |
+
+「ぴよログで」「ぴよログに」は任意です。
+
+### 未対応
+
+- `memo` / `datetime`（「5分前に」など）は、自由文のワイルドカードが他の文とぶつかりやすいため含まれていません。
+- `baby_id` / `baby_index`（複数の赤ちゃん）は未対応です。デフォルトの赤ちゃんに登録されます。
+- `piyolog.add_vaccine` の予防接種の種類（BCGなど）は統合側が未実装です。
+
+### 動作確認
+
+文法だけであれば、HAなしで確認できます。
+
+```bash
+uvx hassil custom_sentences/ja/piyolog.yaml
+
+# uvがインストールされていない場合は
+pip install hassil
+python -m hassil custom_sentences/ja/piyolog.yaml
+```
+
 ## サポート
 
 - **不具合・要望:** [GitHub Issues](https://github.com/naoki-mizuno/piyolog-home-assistant/issues)
 - **質問・議論:** [GitHub Discussions](https://github.com/naoki-mizuno/piyolog-home-assistant/discussions)
+  - 活用例などもこちら
 
 ## ライセンスと注意事項
 

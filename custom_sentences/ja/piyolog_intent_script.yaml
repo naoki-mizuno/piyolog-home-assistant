@@ -1,0 +1,103 @@
+---
+# piyolog.yaml のカスタムインテントを piyolog サービスに繋ぐ。
+# configuration.yaml に次の行を足して読み込む:
+#
+#   intent_script: !include custom_sentences/ja/piyolog_intent_script.yaml
+#
+# すでに intent_script: がある場合は、このファイルの中身をそこに貼り付ける。
+
+PiyologAddEvent:
+  action:
+    - service: "piyolog.add_{{ event }}"
+  speech:
+    text: "記録しました"
+
+PiyologAddPoo:
+  action:
+    - service: piyolog.add_poo
+      data:
+        # 指定がなければ default = ぴよログ側で「記録なし」
+        poo_amount: "{{ poo_amount | default('default') }}"
+        poo_hardness: "{{ poo_hardness | default('default') }}"
+        poo_color: "{{ poo_color | default('default') }}"
+  speech:
+    text: "うんちを記録しました"
+
+PiyologAddAmount:
+  action:
+    - service: "piyolog.add_{{ event }}"
+      data:
+        amount: "{{ amount | int }}"
+  speech:
+    text: "{{ amount }}ミリリットル記録しました"
+
+PiyologAddBreastfeeding:
+  action:
+    - service: piyolog.add_breastfeeding
+      data:
+        breastfeeding_left_minutes: "{{ left | default(0) | int }}"
+        breastfeeding_right_minutes: "{{ right | default(0) | int }}"
+        breastfeeding_order: "{{ order | default('unspecified') }}"
+  speech:
+    text: "母乳を記録しました"
+
+PiyologAddTemperature:
+  action:
+    - service: piyolog.add_temperature
+      data:
+        temperature: "{{ temperature | float }}"
+  speech:
+    text: "体温{{ temperature }}度を記録しました"
+
+PiyologAddWeight:
+  action:
+    - service: piyolog.add_weight
+      data:
+        weight: "{{ weight | float }}"
+        unit: "{{ unit }}"
+  speech:
+    text: "体重を記録しました"
+
+PiyologAddHeight:
+  action:
+    - service: piyolog.add_height
+      data:
+        height: "{{ height | float }}"
+  speech:
+    text: "身長を記録しました"
+
+PiyologAddCircumference:
+  action:
+    - service: "piyolog.add_{{ part }}_circumference"
+      data:
+        circumference: "{{ circumference | float }}"
+  speech:
+    text: "記録しました"
+
+PiyologAddWalk:
+  action:
+    - service: piyolog.add_walk
+      data:
+        duration_minutes: "{{ duration | int }}"
+  speech:
+    text: "{{ duration }}分のさんぽを記録しました"
+
+PiyologAddCustom:
+  action:
+    - service: piyolog.add_custom
+      data:
+        number: "{{ number | int }}"
+  speech:
+    text: "カスタム{{ number }}を記録しました"
+
+PiyologDeleteRecent:
+  action:
+    - service: piyolog.delete_most_recent_event
+  speech:
+    text: "直近の記録を取り消しました"
+
+PiyologSync:
+  action:
+    - service: piyolog.force_sync
+  speech:
+    text: "ぴよログと同期しました"
