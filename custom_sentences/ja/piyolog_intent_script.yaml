@@ -9,6 +9,10 @@
 PiyologAddEvent:
   action:
     - service: "piyolog.add_{{ event }}"
+      data:
+        # datetime は piyolog.yaml の <datetime> 展開ルールが埋める（自由文、未指定なら omit）。
+        # dateparser がパースするので「5分前」でも「昨日の20時」でも渡してよい。
+        datetime: &relative_datetime "{{ datetime | default(omit) }}"
   speech:
     text: "記録しました"
 
@@ -20,6 +24,7 @@ PiyologAddPoo:
         poo_amount: "{{ poo_amount | default('default') }}"
         poo_hardness: "{{ poo_hardness | default('default') }}"
         poo_color: "{{ poo_color | default('default') }}"
+        datetime: *relative_datetime
   speech:
     text: "うんちを記録しました"
 
@@ -28,6 +33,7 @@ PiyologAddAmount:
     - service: "piyolog.add_{{ event }}"
       data:
         amount: "{{ amount | int }}"
+        datetime: *relative_datetime
   speech:
     text: "{{ amount }}ミリリットル記録しました"
 
@@ -38,6 +44,7 @@ PiyologAddBreastfeeding:
         breastfeeding_left_minutes: "{{ left | default(0) | int }}"
         breastfeeding_right_minutes: "{{ right | default(0) | int }}"
         breastfeeding_order: "{{ order | default('unspecified') }}"
+        datetime: *relative_datetime
   speech:
     text: "母乳を記録しました"
 
@@ -46,6 +53,7 @@ PiyologAddTemperature:
     - service: piyolog.add_temperature
       data:
         temperature: "{{ temperature | float }}"
+        datetime: *relative_datetime
   speech:
     text: "体温{{ temperature }}度を記録しました"
 
@@ -55,6 +63,7 @@ PiyologAddWeight:
       data:
         weight: "{{ weight | float }}"
         unit: "{{ unit }}"
+        datetime: *relative_datetime
   speech:
     text: "体重を記録しました"
 
@@ -63,6 +72,7 @@ PiyologAddHeight:
     - service: piyolog.add_height
       data:
         height: "{{ height | float }}"
+        datetime: *relative_datetime
   speech:
     text: "身長を記録しました"
 
@@ -71,6 +81,7 @@ PiyologAddCircumference:
     - service: "piyolog.add_{{ part }}_circumference"
       data:
         circumference: "{{ circumference | float }}"
+        datetime: *relative_datetime
   speech:
     text: "記録しました"
 
@@ -79,6 +90,7 @@ PiyologAddWalk:
     - service: piyolog.add_walk
       data:
         duration_minutes: "{{ duration | int }}"
+        datetime: *relative_datetime
   speech:
     text: "{{ duration }}分のさんぽを記録しました"
 
@@ -87,6 +99,7 @@ PiyologAddCustom:
     - service: piyolog.add_custom
       data:
         number: "{{ number | int }}"
+        datetime: *relative_datetime
   speech:
     text: "カスタム{{ number }}を記録しました"
 
